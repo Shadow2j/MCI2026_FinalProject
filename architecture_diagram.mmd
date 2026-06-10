@@ -1,0 +1,60 @@
+graph TD
+    %% Define Styles
+    classDef source fill:#f9d0c4,stroke:#333,stroke-width:2px;
+    classDef orchestrator fill:#d4e6f1,stroke:#333,stroke-width:2px;
+    classDef compute fill:#fcf3cf,stroke:#333,stroke-width:2px;
+    classDef storage fill:#d5f5e3,stroke:#333,stroke-width:2px;
+    classDef bi fill:#ebdef0,stroke:#333,stroke-width:2px;
+
+    %% Data Source
+    subgraph Data Source
+        CSV[Olist CSV Files<br/>11 Files]:::source
+    end
+
+    %% Orchestration
+    subgraph Orchestration Layer
+        Airflow[Apache Airflow<br/>DAG: dustinia_cx_pipeline]:::orchestrator
+    end
+
+    %% Ingestion Layer
+    subgraph Ingestion Layer
+        Spark1[PySpark: fetch_orders.py<br/>Data Joining & Feature Engineering]:::compute
+        DataLake[(Data Lake<br/>Parquet Files)]:::storage
+    end
+
+    %% Processing Layer
+    subgraph Processing Layer
+        Spark2[PySpark: process_orders_spark.py<br/>Two-Stage Cleaning & Aggregation]:::compute
+        ML[Machine Learning / NLP<br/>Random Forest & TF-IDF]:::compute
+        Simulate[PySpark: simulate_cx_improvements.py<br/>What-If Simulation]:::compute
+    end
+
+    %% Serving Layer
+    subgraph Serving Layer
+        CH[(ClickHouse Data Warehouse)]:::storage
+        DB1[(orders_db<br/>7 Core Tables)]:::storage
+        DB2[(analytics_db<br/>17 Analytical Tables)]:::storage
+        CH --- DB1
+        CH --- DB2
+    end
+
+    %% Visualization Layer
+    subgraph Visualization Layer
+        Metabase[Metabase BI Dashboard<br/>8 Tabs, 58 Queries]:::bi
+    end
+
+    %% Data Flow
+    CSV -->|Read| Spark1
+    Spark1 -->|Write| DataLake
+    DataLake -->|Read| Spark2
+    Spark2 <--> ML
+    Spark2 -->|Write| CH
+    DataLake -->|Read| Simulate
+    Simulate -->|Projected Impact| CH
+    
+    CH -->|Query SQL| Metabase
+
+    %% Orchestration Flow
+    Airflow -.->|Trigger & Monitor| Spark1
+    Airflow -.->|Trigger & Monitor| Spark2
+    Airflow -.->|Trigger & Monitor| Simulate
