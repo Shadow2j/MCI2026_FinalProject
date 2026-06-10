@@ -28,7 +28,7 @@
 6. [ClickHouse Data Warehouse](#clickhouse-data-warehouse)
 7. [Docker Setup](#docker-setup)
 8. [Running the Pipeline](#running-the-pipeline)
-9. [Metabase Dashboard — 8 Tabs, 58 Queries](#metabase-dashboard)
+9. [Metabase Dashboard — 8 Tabs, 50 Queries](#metabase-dashboard)
 10. [Key Insights & Recommendations](#key-insights--recommendations)
 11. [References](#references)
 
@@ -100,7 +100,7 @@ This pipeline implements a **Batch Processing Architecture** to analyze Customer
              │
              ▼
    ╔═══════════════════════════════════════════════════╗
-   ║   Metabase Dashboard — 8 Tabs, 58 Queries         ║
+   ║   Metabase Dashboard — 8 Tabs, 50 Queries         ║
    ║   Overview · Knowledge · CX Predictive            ║
    ║   Improvements · Governance · CX Engine           ║
    ║   Deep Dive · CX Simulation (What-If Model)       ║
@@ -117,7 +117,7 @@ This pipeline implements a **Batch Processing Architecture** to analyze Customer
 | Transform | `process_orders_spark.py` | 24 tables in ClickHouse (2 databases) |
 | Orchestrate | `orders_pipeline_dag.py` | Schedule `*/5 * * * *`, retry 3x |
 | **Simulate** | `simulate_cx_improvements.py` | What-If model → 3 CSV outputs |
-| Visualize | Metabase | 8 tabs, 58 charts/queries |
+| Visualize | Metabase | 8 tabs, 50 charts/queries |
 
 ---
 
@@ -406,11 +406,11 @@ docker exec clickhouse clickhouse-client --query "SELECT count(*) FROM orders_db
 | 2 | **Knowledge Detail** | 7 | Time patterns, delivery, geography |
 | 3 | **Predictive & CX** | 7 |  Review analysis, delivery impact, churn |
 | 4 | **Improvements** | 7 | Seller/category/geographic recommendations |
-| 5 | **Data Governance** | 5 | Pipeline health, data quality |
-| 6 | **CX Engine** | 9 | Deep analysis, root causes, CLV |
-| 7 | **CX Deep Dive** | 11 |  Review stagnation root causes, polarization |
-| 8 | **CX Simulation** | 8 |  What-If model: projected impact of the solution |
-| | **Total** | **58** | |
+| 5 | **Data Governance** | 3 | Pipeline health, data quality |
+| 6 | **CX Engine** | 6 | Deep analysis, root causes, CLV |
+| 7 | **CX Deep Dive** | 8 |  Review stagnation root causes, polarization |
+| 8 | **CX Simulation** | 5 |  What-If model: projected impact of the solution |
+| | **Total** | **50** | |
 
 >  Full query documentation: [query_documentation.md](query_documentation.md)  
 >  Raw SQL: [sql/query.sql](sql/query.sql)
@@ -419,7 +419,7 @@ docker exec clickhouse clickhouse-client --query "SELECT count(*) FROM orders_db
 
 ## Key Insights & Recommendations
 
-Based on the deep-dive analysis of 58 dashboard queries and the What-If simulation model, here are the data-driven answers to the CEO's concerns regarding stagnant review scores:
+Based on the deep-dive analysis of 50 dashboard queries and the What-If simulation model, here are the data-driven answers to the CEO's concerns regarding stagnant review scores:
 
 ###  Why are Review Scores Stagnant?
 
@@ -468,7 +468,7 @@ DustiniaDelixia_Groceria/
 ├── docker-compose.yml            # 6 services orchestration
 ├── requirements.txt              # Python dependencies
 ├── README.md                     # This file
-├── query_documentation.md        # 58 query documentation
+├── query_documentation.md        # 50 query documentation
 ├── clickhouse/
 │   └── schema.sql                # ClickHouse DDL (2 DB, 24 tables)
 ├── dags/
@@ -479,7 +479,7 @@ DustiniaDelixia_Groceria/
 │       ├── process_orders_spark.py  # PySpark → ClickHouse (24 aggregations)
 │       └── simulate_cx_improvements.py  # What-If simulation model
 ├── sql/
-│   └── query.sql                 # 58 Metabase dashboard queries
+│   └── query.sql                 # 50 Metabase dashboard queries
 ├── data_lake/                    # [Auto-created] Parquet files
 │   ├── orders/
 │   └── simulation/               # [Auto-created] Simulation CSV outputs

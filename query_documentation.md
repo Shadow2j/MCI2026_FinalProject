@@ -20,7 +20,7 @@
 | 6 | **CX Engine** | Deep analysis: CLV, sentiment, root causes | 6 |
 | 7 | **CX Deep Dive** | Review stagnation root causes, polarization | 8 |
 | 8 | **CX Simulation** | What-If model: projected impact of solutions | 5 |
-| | | **Total** | **56** |
+| | | **Total** | **50** |
 
 ---
 
