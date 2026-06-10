@@ -17,7 +17,7 @@
 | 3 | **Predictive & CX** | Review score analysis, delivery, churn | 7 |
 | 4 | **Improvements** | Recommendations for sellers, categories, logistics | 7 |
 | 5 | **Data Governance** | Pipeline health, data quality, freshness | 3 |
-| 6 | **CX Engine** | Deep analysis: CLV, sentiment, root causes | 9 |
+| 6 | **CX Engine** | Deep analysis: CLV, sentiment, root causes | 6 |
 | 7 | **CX Deep Dive** | Review stagnation root causes, polarization | 11 |
 | 8 | **CX Simulation** | What-If model: projected impact of solutions | 8 |
 | | | **Total** | **56** |
