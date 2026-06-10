@@ -1,4 +1,4 @@
-# 📊 Query Documentation — Dustinia Delixia Groceria CX Dashboard
+#  Query Documentation — Dustinia Delixia Groceria CX Dashboard
 
 > **Database:** ClickHouse (`orders_db` + `analytics`)  
 > **Pipeline:** CSV → PySpark → ClickHouse → Metabase  
@@ -8,7 +8,7 @@
 
 ---
 
-## 🗂️ Dashboard Structure
+##  Dashboard Structure
 
 | Tab | Name | Focus | Query Count |
 |-----|------|-------|:------------:|
@@ -28,7 +28,7 @@
 
 ![General Overview](images/General_Overview.png)
 
-### 🔢 Q1.1 — Executive KPI Summary
+###  Q1.1 — Executive KPI Summary
 ```sql
 SELECT
     count(DISTINCT order_id)             AS total_orders,
@@ -46,7 +46,7 @@ FROM orders_db.order_items
 
 ---
 
-### 🛍️ Q1.2 — Top 10 Best-Selling Categories
+###  Q1.2 — Top 10 Best-Selling Categories
 **Function:** Identifies the top 10 categories by revenue for stock strategy.  
 **Visualization:** Horizontal bar chart  
 **X Axis:** `revenue` (revenue value in BRL, numeric)  
@@ -56,7 +56,7 @@ FROM orders_db.order_items
 
 ---
 
-### 📊 Q1.3 — Revenue Distribution per Category
+###  Q1.3 — Revenue Distribution per Category
 **Function:** Revenue proportion per category — which one dominates.  
 **Visualization:** Pie / Donut chart  
 **Dimension (Label):** `category` (category name)  
@@ -66,7 +66,7 @@ FROM orders_db.order_items
 
 ---
 
-### ⭐ Q1.4 — Overall Review Score Distribution
+###  Q1.4 — Overall Review Score Distribution
 **Function:** Distribution of review scores 1–5 — how many are satisfied vs unsatisfied.  
 **Visualization:** Bar chart (5 bars)  
 **X Axis:** `review_score` (values 1, 2, 3, 4, 5 — discrete/categorical)  
@@ -75,7 +75,7 @@ FROM orders_db.order_items
 
 ---
 
-### 📦 Q1.5 — Order Status Breakdown
+###  Q1.5 — Order Status Breakdown
 **Function:** Proportion of order statuses (delivered, shipped, canceled, etc.).  
 **Visualization:** Pie chart  
 **Dimension (Label):** `order_status`  
@@ -84,7 +84,7 @@ FROM orders_db.order_items
 
 ---
 
-### 📈 Q1.6 — Monthly Revenue Trend
+###  Q1.6 — Monthly Revenue Trend
 **Function:** Monthly trend of revenue and review scores — spotting stagnation.  
 **Visualization:** Dual-axis line chart  
 **X Axis:** `month` (YYYYMM format, chronological)  
@@ -95,7 +95,7 @@ FROM orders_db.order_items
 
 ---
 
-### 🏆 Q1.7 — Top vs Bottom 3 Categories
+###  Q1.7 — Top vs Bottom 3 Categories
 **Function:** Contrast between the best and worst categories for merchandising strategy.  
 **Visualization:** Comparative table  
 **Columns:** `category`, `total_orders`, `revenue`, `avg_review`, `label`  
