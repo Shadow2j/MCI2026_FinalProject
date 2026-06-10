@@ -409,7 +409,7 @@ docker exec clickhouse clickhouse-client --query "SELECT count(*) FROM orders_db
 | 5 | **Data Governance** | 5 | Pipeline health, data quality |
 | 6 | **CX Engine** | 9 | Deep analysis, root causes, CLV |
 | 7 | **CX Deep Dive** | 11 |  Review stagnation root causes, polarization |
-| 8 | **CX Simulation** | 8 |  What-If model: proyeksi dampak solusi |
+| 8 | **CX Simulation** | 8 |  What-If model: projected impact of the solution |
 | | **Total** | **58** | |
 
 >  Full query documentation: [query_documentation.md](query_documentation.md)  
