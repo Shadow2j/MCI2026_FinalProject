@@ -447,12 +447,13 @@ Using a Random Forest Counterfactual Simulation (R²=0.147 on 20K orders), we pr
 | S4 — Remove Bad Sellers | 4.078 | 4.082 | +0.004 | 1.7% |
 | **S5 — Best Case Combined** | 4.078 | **4.186** | **+0.108** | 17.7% |
 
-###  Priority Recommendations (Actionable)
+###  Operational Priority Recommendations (Actionable)
 
-1.  **[Quick Win] Improve Logistics** — Prioritize eliminating late deliveries. The simulation confirms this provides the highest single impact (S1: +0.110 points).
-2.  **[Strategic] Seller Governance & CS Revamp** — Evaluate bad sellers (S4) and re-audit Customer Service SOPs to enforce stricter SLAs for dispute/refund resolution.
-3.  **[Incremental] Optimize Freight & Approval** — Review shipping fee structures/subsidies (S3) and improve payment approval flows (S2).
-4.  **Continuous Monitoring** — Monitor trends per batch via the Speed Layer dashboard (Tab 7) and Simulation projections (Tab 8).
+1.  **[Quick Win] Fix 3PL Logistics & Routing** — Late delivery is our #1 bottleneck (75.4% impact). We must evaluate 3PL (carrier) SLAs, specifically on inter-state routes with high delay rates, and dynamically adjust 'Estimated Delivery Dates' to manage expectations. (Simulation S1: +0.110 points).
+2.  **[Strategic] CS SOP Revamp & Fast Refunds** — Address the operational failure in Customer Service (as detected by NLP). Enforce strict SLAs for ticket responses to prevent customers from being ignored (`obtive_resposta`) and streamline the refund process (`estorno`, `meu_dinheiro`).
+3.  **[Strategic] Seller Governance System** — Top 10% sellers score 4.5, while Bottom 10% score 2.0. Implement an operational penalty/filter system to manage bad sellers who exhibit poor packing times and rude behavior (`falta_respeito`). (Simulation S4).
+4.  **[Incremental] Accelerate Payment Approvals** — System/Finance operations taking > 24 hours to approve payments must be optimized. Delays here passively lower satisfaction by holding up the entire fulfillment chain. (Simulation S2).
+5.  **Continuous Operational Monitoring** — Monitor operational CX trends per batch via the Speed Layer dashboard (Tab 7) and Simulation projections (Tab 8).
 
 ---
 
