@@ -1106,7 +1106,7 @@ def run_spark_analytics():
 
         # ── AGG 17: top_bad_review_words (NLP Sentiment) ────────────────
         print("📦  AGG 17/22 — top_bad_review_words (NLP) …")
-        df_nlp = df_clean.filter((F.col("review_score") == 1) & F.col("review_comment_message").isNotNull())
+        df_nlp = df_clean.filter((F.col("review_score") <= 2) & F.col("review_comment_message").isNotNull())
         if df_nlp.count() > 0:
             df_nlp = df_nlp.withColumn("review_lower", F.lower(F.col("review_comment_message")))
             df_nlp = df_nlp.withColumn("words", F.split(F.col("review_lower"), "[^a-záéíóúâêôãõç]"))
@@ -1118,7 +1118,7 @@ def run_spark_analytics():
             df_top_words = df_words.groupBy("word").agg(F.count("*").alias("frequency")).orderBy(F.desc("frequency")).limit(20)
             write_to_clickhouse(ch_client, df_top_words.toPandas(), "analytics", "top_bad_review_words", mode="truncate")
         else:
-            print("  ⚠️  Not enough 1-star reviews for NLP")
+            print("  ⚠️  Not enough 1 or 2-star reviews for NLP")
 
         # ══════════════════════════════════════════════════════════════
         # CX DEEP-DIVE AGGREGATIONS (AGG 18-22)
