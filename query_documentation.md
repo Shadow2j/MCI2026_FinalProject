@@ -465,7 +465,7 @@ FROM orders_db.order_items
 
 ---
 
-##  TAB 7 — CX Deep Dive: Review Stagnation Analysis (11 Queries)
+##  TAB 7 — CX Deep Dive: Review Stagnation Analysis (8 Queries)
 
 ![CX Deep Dive](images/CXDeepDive.png)
 
@@ -540,7 +540,14 @@ Special tab to answer the CEO's question: "Why are review scores hard to improve
 - **Visualization**: Table with conditional formatting
 - **Columns**: `seller_state`, `customer_state`, `is_same_state`, `total_orders`, `avg_review`, `avg_shipping_days`, `late_pct`
 - **Filter**: `total_orders >= 20`
-- **Sort**: Ascending by `avg_rev- **Data Source**: `analytics.review_score_shift`
+- **Sort**: Ascending by `avg_review`
+- **Insight**: Highlights geographic logistics bottlenecks where average review scores drop significantly.
+
+---
+
+###  Q7.7 — Review Score Distribution Shift
+- **Function**: Detects polarization of review scores
+- **Data Source**: `analytics.review_score_shift`
 - **Visualization**: 100% Stacked bar chart
 - **X Axis**: `year_month` (chronological)
 - **Y Axis**: `score_pct` (IMPORTANT: Only put `score_pct` on the Y-Axis, remove other columns)
@@ -563,7 +570,7 @@ Special tab to answer the CEO's question: "Why are review scores hard to improve
 
 ---
 
-##  TAB 8 — CX Simulation & Projections: What-If Model (8 Queries)
+##  TAB 8 — CX Simulation & Projections: What-If Model (5 Queries)
 
 ![CX Simulation & Projection](images/CXSimulation&Projection.png)
 
@@ -586,21 +593,7 @@ Special tab to answer the question: **"If CX solutions are implemented, what wil
 
 ---
 
-###  Q8.2 — Projected Review Score per Scenario 
-- **Function**: Ranking scenarios based on projected avg review, with 95% confidence interval
-- **Data Source**: `analytics.simulation_scenarios`
-- **Visualization**: Horizontal bar chart with baseline reference line
-- **X Axis**: `projected_avg_review` (numeric, 1–5 scale)
-- **Y Axis**: `scenario_name` (categorical, sorted descending by projected review)
-- **Reference Line**: `baseline_avg_review` = 4.078 (vertical line)
-- **Color**: Gradient based on `impact_level` (High Impact = green, Low = gray)
-- **Horizontal Error Bar**: `ci_lower_95` – `ci_upper_95`
-- **Tooltip**: `delta`, `impact_level`, `ci_lower_95`, `ci_upper_95`
-- **Insight**: Projected review score + uncertainty range if solutions are implemented
-
----
-
-###  Q8.3 — Orders Affected per Scenario 
+###  Q8.2 — Orders Affected per Scenario 
 - **Function**: How many orders change their condition in each scenario?
 - **Data Source**: `analytics.simulation_scenarios`
 - **Visualization**: Stacked bar chart
@@ -613,20 +606,20 @@ Special tab to answer the question: **"If CX solutions are implemented, what wil
 
 ---
 
-###  Q8.4 — ML Feature Importance 
-- **Function**: Which factors most strongly influence review scores in the Random Forest model?
-- **Data Source**: `analytics.simulation_feature_impact`
-- **Visualization**: Horizontal bar chart (sorted descending)
-- **X Axis**: `importance_pct` (contribution percentage, numeric 0–100%)
-- **Y Axis**: `feature_label` (human-readable feature name, categorical)
-- **Color**: Gradient based on `driver_level` (Critical = dark red, Major = orange, Moderate = yellow, Minor = gray)
-- **Annotation**: `importance_pct` as a label at the end of the bar
-- **Tooltip**: `model_r2`, `driver_level`
-- **Insight**: `delivery_delay_days` contributes **75.4%** of the total feature importance — confirming that delays are the primary ROOT CAUSE
+###  Q8.3 — Revenue Impact Projection 
+- **Function**: Estimated financial impact of review score improvements per scenario
+- **Data Source**: `analytics.simulation_scenarios` (filter `review_delta > 0`)
+- **Visualization**: Bar chart with badge
+- **X Axis**: `scenario_name` (scenarios with positive impact, categorical)
+- **Y Axis**: `revenue_impact_brl` (estimated additional revenue in BRL, numeric)
+- **Series Breakout (Metabase)**: `roi_level` (IMPORTANT: Put this in "Add series breakout" under X-axis to color bars by ROI level)
+- **Tooltip**: `additional_orders_est`, `review_delta`, `affected_pct`
+- **Note**: Assumption: +1 review point → +5% order growth × avg order value
+- **Insight**: Scenarios with the highest review_delta provide the largest revenue impact
 
 ---
 
-###  Q8.5 — Negative Review Reduction per Scenario 
+###  Q8.4 — Negative Review Reduction per Scenario 
 - **Function**: What percentage of negative reviews is reduced after each solution?
 - **Data Source**: `analytics.simulation_scenarios`
 - **Visualization**: Grouped bar chart (before vs after, 2 metrics)
@@ -643,41 +636,16 @@ Special tab to answer the question: **"If CX solutions are implemented, what wil
 
 ---
 
-###  Q8.6 — Revenue Impact Projection 
-- **Function**: Estimated financial impact of review score improvements per scenario
-- **Data Source**: `analytics.simulation_scenarios` (filter `review_delta > 0`)
-- **Visualization**: Bar chart with badge
-- **X Axis**: `scenario_name` (scenarios with positive impact, categorical)
-- **Y Axis**: `revenue_impact_brl` (estimated additional revenue in BRL, numeric)
-- **Series Breakout (Metabase)**: `roi_level` (IMPORTANT: Put this in "Add series breakout" under X-axis to color bars by ROI level)
-- **Tooltip**: `additional_orders_est`, `review_delta`, `affected_pct`
-- **Note**: Assumption: +1 review point → +5% order growth × avg order value
-- **Insight**: Scenarios with the highest review_delta provide the largest revenue impact
-
----
-
-###  Q8.7 — Solution Recommendation Summary 
-- **Function**: CEO-level summary table: scenario, before/after, confidence interval, recommended actions
-- **Data Source**: `analytics.simulation_scenarios`
-- **Visualization**: Table with conditional formatting
-- **Columns**: `scenario_id`, `scenario_name`, `before`, `after`, `delta`, `pct_orders_affected`, `recommendation_preview`, `ci_lower`, `ci_upper`
-- **Sort**: `scenario_id` ASC (S1 → S5)
-- **Conditional Formatting**: `delta` > 0.05 → green bold, `delta` < 0 → red
-- **Insight**: One-page summary for presentations to CEO/management
-
----
-
-###  Q8.8 — Priority Matrix: Impact vs Scope 
-- **Function**: Solution priority quadrant based on impact (review_delta) vs scope (affected_pct)
-- **Data Source**: `analytics.simulation_scenarios`
-- **Visualization**: Scatter / Bubble chart
-- **X Axis**: `scope_pct` (% affected orders, numeric — proxy for "effort/scope")
-- **Y Axis**: `impact_score` (review_delta, numeric — impact measure)
-- **Bubble Size**: `est_revenue_impact_brl` (larger revenue impact = larger bubble)
-- **Color**: Based on `priority_quadrant` — Quick Win (green), Strategic (blue), Incremental (yellow), Low Priority (gray)
-- **Label**: `scenario_name` at each point
-- **Quadrant Lines**: Vertical line at x=10% and horizontal line at y=0.05
-- **Tooltip**: `projected_review`, `impact_score`, `scope_pct`, `priority_quadrant`, `est_revenue_impact_brl`
+###  Q8.5 — ML Feature Importance 
+- **Function**: Which factors most strongly influence review scores in the Random Forest model?
+- **Data Source**: `analytics.simulation_feature_impact`
+- **Visualization**: Horizontal bar chart (sorted descending)
+- **X Axis**: `importance_pct` (contribution percentage, numeric 0–100%)
+- **Y Axis**: `feature_label` (human-readable feature name, categorical)
+- **Color**: Gradient based on `driver_level` (Critical = dark red, Major = orange, Moderate = yellow, Minor = gray)
+- **Annotation**: `importance_pct` as a label at the end of the bar
+- **Tooltip**: `model_r2`, `driver_level`
+- **Insight**: `delivery_delay_days` contributes **75.4%** of the total feature importance — confirming that delays are the primary ROOT CAUSE
 - **Insight**: S1 is in the "Quick Win" quadrant — high impact with narrow scope (only 7.5% of orders)
 
 ---
