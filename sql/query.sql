@@ -1,6 +1,6 @@
 -- ══════════════════════════════════════════════════════════════════════════
 -- Dustinia Delixia Groceria — Dashboard Queries
--- Customer Experience Analytics — 7 Tabs, 50 Queries
+-- Customer Experience Analytics — 8 Tabs, 50 Queries
 -- ══════════════════════════════════════════════════════════════════════════
 -- Author: Raymond Julius Pardosi (5025241268)
 -- Database: ClickHouse (orders_db + analytics)
@@ -738,26 +738,7 @@ SELECT
 FROM analytics.simulation_scenarios
 ORDER BY scenario_id;
 
--- 8.2 ⭐⭐ Projected Review Score per Scenario (Horizontal bar + baseline reference)
--- Membandingkan projected review score dengan garis baseline
-SELECT
-    scenario_id,
-    scenario_name,
-    round(projected_avg_review, 3) AS projected_avg_review,
-    round(baseline_avg_review, 3) AS baseline_avg_review,
-    round(review_delta, 3) AS delta,
-    CASE
-        WHEN review_delta > 0.05 THEN 'High Impact'
-        WHEN review_delta > 0.01 THEN 'Medium Impact'
-        WHEN review_delta > 0 THEN 'Low Impact'
-        ELSE 'Negligible / Negative'
-    END AS impact_level,
-    round(ci_lower_95, 3) AS ci_lower_95,
-    round(ci_upper_95, 3) AS ci_upper_95
-FROM analytics.simulation_scenarios
-ORDER BY projected_avg_review DESC;
-
--- 8.3 ⭐⭐ Orders Affected per Scenario (Stacked bar: affected vs not affected)
+-- 8.2 ⭐⭐ Orders Affected per Scenario (Stacked bar: affected vs not affected)
 -- Menunjukkan berapa banyak order yang berubah kondisi di setiap skenario
 SELECT
     scenario_id,
@@ -770,36 +751,7 @@ SELECT
 FROM analytics.simulation_scenarios
 ORDER BY affected_orders DESC;
 
--- 8.4 ⭐⭐ ML Feature Importance (Horizontal bar chart)
--- Faktor apa yang paling berpengaruh terhadap review score dalam model ML?
-SELECT
-    feature_label,
-    round(importance_pct, 2) AS importance_pct,
-    round(model_r2, 3) AS model_r2,
-    CASE
-        WHEN importance_pct >= 50 THEN 'Critical Driver'
-        WHEN importance_pct >= 20 THEN 'Major Driver'
-        WHEN importance_pct >= 10 THEN 'Moderate Driver'
-        ELSE 'Minor Driver'
-    END AS driver_level
-FROM analytics.simulation_feature_impact
-ORDER BY importance_pct DESC;
-
--- 8.5 ⭐ Negative Review Reduction per Scenario (Bar chart)
--- Penurunan % review negatif setelah solusi diterapkan
-SELECT
-    scenario_id,
-    scenario_name,
-    round(baseline_negative_pct, 1) AS baseline_negative_pct,
-    round(projected_negative_pct, 1) AS projected_negative_pct,
-    round(negative_delta, 1) AS negative_reduction,
-    round(baseline_positive_pct, 1) AS baseline_positive_pct,
-    round(projected_positive_pct, 1) AS projected_positive_pct,
-    round(positive_delta, 1) AS positive_gain
-FROM analytics.simulation_scenarios
-ORDER BY negative_reduction ASC;
-
--- 8.6 ⭐⭐ Revenue Impact Projection (KPI cards per scenario)
+-- 8.3 ⭐⭐ Revenue Impact Projection (KPI cards per scenario)
 -- Estimasi dampak finansial dari peningkatan review score
 SELECT
     scenario_id,
@@ -817,36 +769,31 @@ FROM analytics.simulation_scenarios
 WHERE review_delta > 0
 ORDER BY revenue_impact_est_brl DESC;
 
--- 8.7 ⭐⭐⭐ Solution Recommendation Summary (Table — CEO-level dashboard card)
--- Tabel ringkasan untuk presentasi ke CEO: skenario + action + projected uplift
+-- 8.4 ⭐ Negative Review Reduction per Scenario (Bar chart)
+-- Penurunan % review negatif setelah solusi diterapkan
 SELECT
     scenario_id,
     scenario_name,
-    round(baseline_avg_review, 2) AS before,
-    round(projected_avg_review, 2) AS after,
-    round(review_delta, 3) AS delta,
-    round(affected_pct, 1) AS pct_orders_affected,
-    substring(solution_recommendation, 1, 120) AS recommendation_preview,
-    round(ci_lower_95, 2) AS ci_lower,
-    round(ci_upper_95, 2) AS ci_upper
+    round(baseline_negative_pct, 1) AS baseline_negative_pct,
+    round(projected_negative_pct, 1) AS projected_negative_pct,
+    round(negative_delta, 1) AS negative_reduction,
+    round(baseline_positive_pct, 1) AS baseline_positive_pct,
+    round(projected_positive_pct, 1) AS projected_positive_pct,
+    round(positive_delta, 1) AS positive_gain
 FROM analytics.simulation_scenarios
-ORDER BY scenario_id;
+ORDER BY negative_reduction ASC;
 
--- 8.8 ⭐⭐⭐ Priority Matrix: Impact vs Effort (Scatter chart)
--- Menentukan prioritas solusi berdasarkan dampak (review_delta) vs
--- luas cakupan (affected_pct sebagai proxy effort/scope)
+-- 8.5 ⭐⭐ ML Feature Importance (Horizontal bar chart)
+-- Faktor apa yang paling berpengaruh terhadap review score dalam model ML?
 SELECT
-    scenario_id,
-    scenario_name,
-    round(review_delta, 4) AS impact_score,
-    round(affected_pct, 1) AS scope_pct,
-    round(projected_avg_review, 3) AS projected_review,
+    feature_label,
+    round(importance_pct, 2) AS importance_pct,
+    round(model_r2, 3) AS model_r2,
     CASE
-        WHEN review_delta > 0.05 AND affected_pct < 10 THEN 'Quick Win (High Impact, Narrow Scope)'
-        WHEN review_delta > 0.05 AND affected_pct >= 10 THEN 'Strategic (High Impact, Broad Scope)'
-        WHEN review_delta <= 0.05 AND affected_pct >= 10 THEN 'Incremental (Low Impact, Broad Scope)'
-        ELSE 'Low Priority (Low Impact, Narrow Scope)'
-    END AS priority_quadrant,
-    round(revenue_impact_est_brl, 0) AS est_revenue_impact_brl
-FROM analytics.simulation_scenarios
-ORDER BY impact_score DESC;
+        WHEN importance_pct >= 50 THEN 'Critical Driver'
+        WHEN importance_pct >= 20 THEN 'Major Driver'
+        WHEN importance_pct >= 10 THEN 'Moderate Driver'
+        ELSE 'Minor Driver'
+    END AS driver_level
+FROM analytics.simulation_feature_impact
+ORDER BY importance_pct DESC;
