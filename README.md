@@ -12,7 +12,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 > **Persona 2: Customer Experience Analyst**  
-> **Misi:** Menganalisis mengapa review score cenderung stagnan dan sulit naik.
+> **Mission:** Analyze why review scores tend to stagnate and are difficult to improve.
 
 </div>
 
@@ -51,7 +51,7 @@
 
 ## Architecture
 
-Pipeline ini mengimplementasikan **Batch Processing Architecture** untuk menganalisis Customer Experience dari dataset e-commerce.
+This pipeline implements a **Batch Processing Architecture** to analyze Customer Experience from an e-commerce dataset.
 
 ### Data Flow Diagram
 
@@ -106,7 +106,7 @@ Pipeline ini mengimplementasikan **Batch Processing Architecture** untuk mengana
    ║   Deep Dive · CX Simulation (What-If Model)       ║
    ╚═══════════════════════════════════════════════════╝
 
-  Pipeline diorkestrasikan oleh Apache Airflow (scheduled every 5 min)
+  Pipeline is orchestrated by Apache Airflow (scheduled every 5 min)
 ```
 
 ### Flow Summary
@@ -123,23 +123,23 @@ Pipeline ini mengimplementasikan **Batch Processing Architecture** untuk mengana
 
 ## Dataset & Schema
 
-Dataset ini merepresentasikan transaksi e-commerce dari Olist (Brazilian marketplace) yang telah diadaptasi untuk **Dustinia Delixia Groceria**.
+This dataset represents e-commerce transactions from Olist (a Brazilian marketplace) that have been adapted for **Dustinia Delixia Groceria**.
 
 ### Input: 11 CSV Files
 
 | File | Rows | Description |
 |------|:----:|-------------|
-| `orders.csv` | ~100K | Informasi pesanan & timestamp |
-| `order_items.csv` | ~113K | Item dalam pesanan (grain: 1 item per row) |
-| `products.csv` | ~33K | Katalog produk & spesifikasi |
-| `customers.csv` | ~99K | Informasi pelanggan & lokasi |
-| `sellers.csv` | ~3K | Informasi penjual & lokasi |
-| `order_payments.csv` | ~104K | Metode & nilai pembayaran |
-| `order_reviews.csv` | ~100K | Ulasan & skor ( KEY DATA) |
-| `category_translation.csv` | ~71 | Terjemahan nama kategori PT→EN |
-| `geolocation.csv` | ~1M | Koordinat zip code |
+| `orders.csv` | ~100K | Order information & timestamps |
+| `order_items.csv` | ~113K | Items within an order (grain: 1 item per row) |
+| `products.csv` | ~33K | Product catalog & specifications |
+| `customers.csv` | ~99K | Customer information & location |
+| `sellers.csv` | ~3K | Seller information & location |
+| `order_payments.csv` | ~104K | Payment methods & values |
+| `order_reviews.csv` | ~100K | Reviews & scores ( KEY DATA) |
+| `category_translation.csv` | ~71 | Category name translation PT→EN |
+| `geolocation.csv` | ~1M | Zip code coordinates |
 | `mql.csv` | ~8K | Marketing qualified leads |
-| `closed_deals.csv` | ~842 | Deals tertutup |
+| `closed_deals.csv` | ~842 | Closed deals |
 
 ### Output: Denormalized Fact Table (36 columns)
 
@@ -171,7 +171,7 @@ Dataset ini merepresentasikan transaksi e-commerce dari Olist (Brazilian marketp
 
 ## Data Cleaning Pipeline
 
-Setiap batch melewati **2-stage cleaning pipeline** yang transparan dan auditable.
+Each batch goes through a transparent and auditable **2-stage cleaning pipeline**.
 
 ```
 df_raw  ──────────────────────────────────────────────────
@@ -208,7 +208,7 @@ df_clean ───────────────────────�
 
 ## Spark Processing & Aggregation
 
-`process_orders_spark.py` menjalankan **24 analytical aggregations & Machine Learning Models** dari satu cached `df_clean`, fokus pada Customer Experience.
+`process_orders_spark.py` executes **24 analytical aggregations & Machine Learning Models** from a single cached `df_clean`, focusing on Customer Experience.
 
 ### 24 Aggregations & ML Models
 
@@ -266,7 +266,7 @@ Low    = recency < 90 days
 
 ## ClickHouse Data Warehouse
 
-Pipeline output disimpan di **2 databases** dengan total **24 tables**:
+Pipeline output is stored in **2 databases** with a total of **24 tables**:
 
 ### Database: `orders_db` (Core Warehouse)
 
@@ -310,9 +310,9 @@ Pipeline output disimpan di **2 databases** dengan total **24 tables**:
 
 ### Prerequisites
 
-- Docker Desktop terinstall dan running
-- Minimum 8GB RAM available untuk Docker
-- Port 8080, 3000, 8123, 9000 tersedia
+- Docker Desktop installed and running
+- Minimum 8GB RAM available for Docker
+- Ports 8080, 3000, 8123, 9000 available
 
 ### Services
 
@@ -332,14 +332,14 @@ Pipeline output disimpan di **2 databases** dengan total **24 tables**:
 git clone <repository-url>
 cd DustiniaDelixia_Groceria
 
-# 2. Pastikan 11 file CSV ada di dalam folder `dataset/`
+# 2. Ensure all 11 CSV files are inside the `dataset/` folder
 
-# 3. Build & start semua services
+# 3. Build & start all services
 docker compose up --build -d
 
-# 4. Tunggu ~2 menit untuk initialization
+# 4. Wait ~2 minutes for initialization
 
-# 5. Akses services
+# 5. Access services
 #    Airflow:    http://localhost:8080 (admin/admin)
 #    Metabase:   http://localhost:3000
 #    ClickHouse: http://localhost:8123
@@ -351,12 +351,12 @@ docker compose up --build -d
 
 ### Method 1: Automatic (via Airflow Scheduler)
 
-DAG `dustinia_cx_pipeline` akan berjalan otomatis setiap 5 menit setelah diaktifkan di Airflow UI.
+DAG `dustinia_cx_pipeline` will run automatically every 5 minutes once enabled in the Airflow UI.
 
-1. Buka **http://localhost:8080** (login: `admin`/`admin`)
-2. Cari DAG `dustinia_cx_pipeline`
-3. Toggle switch ke **ON**
-4. Pipeline akan berjalan otomatis
+1. Open **http://localhost:8080** (login: `admin`/`admin`)
+2. Find the DAG `dustinia_cx_pipeline`
+3. Toggle switch to **ON**
+4. Pipeline will run automatically
 
 ### Method 2: Manual Trigger
 
@@ -364,9 +364,9 @@ DAG `dustinia_cx_pipeline` akan berjalan otomatis setiap 5 menit setelah diaktif
 # Trigger DAG via CLI
 docker exec airflow-webserver airflow dags trigger dustinia_cx_pipeline
 
-# Atau trigger via Airflow Web UI:
-# 1. Buka DAG
-# 2. Klik tombol ▶ (Trigger DAG)
+# Or trigger via Airflow Web UI:
+# 1. Open DAG
+# 2. Click the ▶ button (Trigger DAG)
 ```
 
 ### Verify Pipeline
@@ -389,16 +389,16 @@ docker exec clickhouse clickhouse-client --query "SELECT count(*) FROM orders_db
 
 ### Setup Metabase Connection
 
-1. Buka **http://localhost:3000**
+1. Open **http://localhost:3000**
 2. Complete initial setup wizard
 3. Add ClickHouse as database:
    - **Database type:** ClickHouse
    - **Host:** clickhouse
    - **Port:** 8123
-   - **Database name:** orders_db (untuk Tab 1-2, 5)
-   - Tambah juga koneksi ke `analytics` database
+   - **Database name:** orders_db (for Tabs 1-2, 5)
+   - Also add a connection to the `analytics` database
 
-### 7 Dashboard Tabs
+### 8 Dashboard Tabs
 
 | Tab | Name | Queries | Focus |
 |:---:|------|:-------:|-------|
@@ -419,25 +419,40 @@ docker exec clickhouse clickhouse-client --query "SELECT count(*) FROM orders_db
 
 ## Key Insights & Recommendations
 
-Berdasarkan analisis 58 query dashboard + model simulasi What-If, berikut temuan utama untuk menjawab pertanyaan CEO:
+Based on the deep-dive analysis of 58 dashboard queries and the What-If simulation model, here are the data-driven answers to the CEO's concerns regarding stagnant review scores:
 
-###  Mengapa Review Score Stagnan?
+###  Why are Review Scores Stagnant?
 
-| # | Root Cause | Impact | Evidence |
-|---|-----------|--------|----------|
-| 1 | **Late Delivery** |  Highest | Review score turun ~1.5 poin saat pengiriman terlambat |
-| 2 | **High Freight Cost** |  High | Freight > 30 berkorelasi dengan review lebih rendah |
-| 3 | **Seller Inconsistency** |  High | Top 10% seller punya avg review 4.5, bottom 10% hanya 2.0 |
-| 4 | **Geographic Disparity** |  Medium | State tertentu memiliki late delivery rate 2-3x lebih tinggi |
-| 5 | **Slow Approval** |  Medium | Approval > 24 jam menurunkan review ~0.3 poin |
+The stagnation is caused by a combination of compounding factors, specifically:
 
-###  Rekomendasi Aksi
+1. **Late Delivery (Primary Root Cause)** — The #1 factor lowering review scores (Feature Importance: 75.4%). Late deliveries drop review scores by ~1.5 to 1.7 points.
+2. **High Freight Cost** — Expensive shipping has a negative correlation with satisfaction (Feature Importance: 6.7%).
+3. **Inconsistent Seller Performance** — Certain sellers are consistently poor, heavily dragging down the average.
+4. **Geographic Issues** — Customers in specific states face significantly longer delivery times.
+5. **Approval Delays** — Payment approval times exceeding 24 hours consistently lower final review scores.
+6. **CS Resolution & Refund Failures (NLP Insight)** — TF-IDF and Log-Odds extraction reveal that dominant complaints center on post-purchase service failures. Specifically:
+   - `estorno`, `meu_dinheiro` → **Refund Issues** (Slow/failed refund system)
+   - `obtive_resposta` → **Unresponsive CS** (Customers ignored by support)
+   - `falta_respeito` → **Poor Seller Behavior** (Unprofessional conduct)
 
-1.  **Perbaiki Logistik** — Eliminasi late delivery (S1: +0.110 poin review, 7.5% orders terdampak)
-2.  **Evaluasi Seller** — Terapkan minimum standard untuk seller, edukasi seller dengan review < 3.0
-3.  **Optimalkan Freight** — Review pricing strategy untuk produk berat, negosiasi tarif dengan carrier
-4.  **Percepat Approval** — Target approval < 6 jam, automation untuk order standard
-5.  **Monitoring Berkelanjutan** — Gunakan Speed Layer (Tab 7) + Simulation Dashboard (Tab 8)
+###  What-If Simulation Projections
+
+Using a Random Forest Counterfactual Simulation (R²=0.147 on 20K orders), we projected the impact of various CX solutions:
+
+| Scenario | Baseline | Projected | Delta | Affected Orders |
+|----------|----------|-----------|-------|----------------|
+| **S1 — Eliminate Late Delivery** | 4.078 | **4.187** | **+0.110** | 7.5% |
+| S2 — Accelerate Approval | 4.078 | 4.078 | +0.001 | 1.6% |
+| S3 — Cap Freight ≤30 | 4.078 | 4.077 | -0.001 | 11.4% |
+| S4 — Remove Bad Sellers | 4.078 | 4.082 | +0.004 | 1.7% |
+| **S5 — Best Case Combined** | 4.078 | **4.186** | **+0.108** | 17.7% |
+
+###  Priority Recommendations (Actionable)
+
+1.  **[Quick Win] Improve Logistics** — Prioritize eliminating late deliveries. The simulation confirms this provides the highest single impact (S1: +0.110 points).
+2.  **[Strategic] Seller Governance & CS Revamp** — Evaluate bad sellers (S4) and re-audit Customer Service SOPs to enforce stricter SLAs for dispute/refund resolution.
+3.  **[Incremental] Optimize Freight & Approval** — Review shipping fee structures/subsidies (S3) and improve payment approval flows (S2).
+4.  **Continuous Monitoring** — Monitor trends per batch via the Speed Layer dashboard (Tab 7) and Simulation projections (Tab 8).
 
 ---
 
@@ -465,7 +480,7 @@ DustiniaDelixia_Groceria/
 ├── data_lake/                    # [Auto-created] Parquet files
 │   ├── orders/
 │   └── simulation/               # [Auto-created] Simulation CSV outputs
-└── dataset/                    # Folder berisi 11 CSV data files
+└── dataset/                    # Folder containing 11 CSV data files
 ```
 
 ---
@@ -477,8 +492,8 @@ DustiniaDelixia_Groceria/
 - [ClickHouse Documentation](https://clickhouse.com/docs)
 - [Metabase Documentation](https://www.metabase.com/docs/)
 - [Olist Brazilian E-Commerce Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
-- Referensi arsitektur: [MCI2026_Task2_Kelompok14](https://github.com/Reiii0-0/MCI2026_Task2_Kelompok14)
-- Referensi metodologi (TF-IDF & N-Grams): [TWS (Tinjauan Waktu Studi) by Farikh](https://medium.com/@farikh0mf/tws-4da6f3e57b1b?postPublishedType=repub)
+- [MCI2026_Task2_Kelompok14](https://github.com/Reiii0-0/MCI2026_Task2_Kelompok14)
+- [Deciphering Player Sentiment: Advanced Feature Engineering for Signature Keyword Extraction in Massive Video Game Review Corpora](https://medium.com/@farikh0mf/tws-4da6f3e57b1b?postPublishedType=repub)
 
 ---
 
