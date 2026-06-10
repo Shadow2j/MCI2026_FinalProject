@@ -477,8 +477,8 @@ DustiniaDelixia_Groceria/
 - [ClickHouse Documentation](https://clickhouse.com/docs)
 - [Metabase Documentation](https://www.metabase.com/docs/)
 - [Olist Brazilian E-Commerce Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
-- Referensi arsitektur: [MCI2026_Task2_Kelompok14](https://github.com/Reiii0-0/MCI2026_Task2_Kelompok14)
-- Referensi metodologi (TF-IDF & N-Grams): [TWS (Tinjauan Waktu Studi) by Farikh](https://medium.com/@farikh0mf/tws-4da6f3e57b1b?postPublishedType=repub)
+- [MCI2026_Task2_Kelompok14](https://github.com/Reiii0-0/MCI2026_Task2_Kelompok14)
+- [Deciphering Player Sentiment: Advanced Feature Engineering for Signature Keyword Extraction in Massive Video Game Review Corpora](https://medium.com/@farikh0mf/tws-4da6f3e57b1b?postPublishedType=repub)
 
 ---
 
