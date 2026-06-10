@@ -1,0 +1,44 @@
+# ══════════════════════════════════════════════════
+# DustiniaDelixia_Groceria — .gitignore
+# ══════════════════════════════════════════════════
+
+# Data files (too large for git)
+*.csv
+data_lake/
+*.parquet
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+.env
+venv/
+.venv/
+
+# Docker volumes (persistent data)
+postgres_data/
+clickhouse_data/
+metabase_data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+
+# Internal Agent Data
+.agents/
