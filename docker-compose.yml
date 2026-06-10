@@ -1,0 +1,126 @@
+# ══════════════════════════════════════════════════════════════
+# DustiniaDelixia_Groceria — Docker Compose
+# Customer Experience Analytics Pipeline
+# ══════════════════════════════════════════════════════════════
+# Services: PostgreSQL, Airflow (init/webserver/scheduler),
+#           ClickHouse, Metabase
+# ══════════════════════════════════════════════════════════════
+
+version: '3.8'
+
+x-airflow-common:
+  &airflow-common
+  build: .
+  environment:
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+    - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__WEBSERVER__SECRET_KEY=dustinia_delixia_groceria_mci_2026
+    - JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./data_lake:/opt/airflow/data_lake
+    - ./dataset:/opt/airflow/data_source:ro
+  depends_on:
+    postgres:
+      condition: service_healthy
+    clickhouse:
+      condition: service_started
+
+services:
+  # ── PostgreSQL: Airflow Metadata Database ───────────────────
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  # ── ClickHouse: Analytical Data Warehouse ───────────────────
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    environment:
+      - CLICKHOUSE_USER=airflow
+      - CLICKHOUSE_PASSWORD=airflow
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./clickhouse/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    restart: always
+
+  # ── Airflow Init: Database Migration & Admin User ───────────
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate &&
+        airflow users create \
+          --username admin \
+          --firstname Raymond \
+          --lastname Pardosi \
+          --role Admin \
+          --email raymond@dustinia.com \
+          --password admin
+    restart: "no"
+
+  # ── Airflow Webserver: Web UI (port 8080) ───────────────────
+  airflow-webserver:
+    <<: *airflow-common
+    command: airflow webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  # ── Airflow Scheduler: DAG Orchestration ────────────────────
+  airflow-scheduler:
+    <<: *airflow-common
+    command: airflow scheduler
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname $(hostname)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  # ── Metabase: BI Dashboard Visualization (port 3000) ────────
+  metabase:
+    image: metabase/metabase:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_data:/metabase-data
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+    depends_on:
+      clickhouse:
+        condition: service_started
+    restart: always
+
+volumes:
+  postgres_data:
+  clickhouse_data:
+  metabase_data:

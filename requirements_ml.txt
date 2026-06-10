@@ -1,0 +1,8 @@
+pandas
+numpy
+scikit-learn
+clickhouse-driver
+matplotlib
+seaborn
+nltk
+jupyter
