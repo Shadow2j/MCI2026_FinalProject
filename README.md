@@ -252,9 +252,9 @@ delivery_delay = delivered_date - estimated_date  # positive = late
 is_late = delivery_delay > 0
 
 # RFM Loyalty Tiers
-Gold   = total_orders >= 5
-Silver = total_orders 3-4
-Bronze = total_orders < 3
+Gold   = total_orders >= 3
+Silver = total_orders == 2
+Bronze = total_orders < 2
 
 # Churn Risk
 High   = recency > 60 days

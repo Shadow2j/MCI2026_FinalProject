@@ -847,8 +847,8 @@ def run_spark_analytics():
             .withColumn("monetary", F.col("total_spend"))
             .withColumn(
                 "loyalty_tier",
-                F.when(F.col("total_orders") >= 5, F.lit("Gold"))
-                .when(F.col("total_orders") >= 3, F.lit("Silver"))
+                F.when(F.col("total_orders") >= 3, F.lit("Gold"))
+                .when(F.col("total_orders") >= 2, F.lit("Silver"))
                 .otherwise(F.lit("Bronze")),
             )
             .withColumn(
