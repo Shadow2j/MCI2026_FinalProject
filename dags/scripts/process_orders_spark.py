@@ -853,11 +853,11 @@ def run_spark_analytics():
             )
             .withColumn(
                 "churn_risk",
-                # High  : tidak order > 6 bulan sejak order terakhir di dataset
-                # Medium: tidak order 3-6 bulan
-                # Low   : masih aktif dalam 3 bulan terakhir periode dataset
-                F.when(F.col("recency_days") > 180, F.lit("High"))
-                .when(F.col("recency_days") > 90,  F.lit("Medium"))
+                # High  : tidak order > 2 bulan (Groceria churn risk)
+                # Medium: tidak order 1-2 bulan
+                # Low   : masih aktif berbelanja dalam 1 bulan terakhir
+                F.when(F.col("recency_days") > 60, F.lit("High"))
+                .when(F.col("recency_days") > 30,  F.lit("Medium"))
                 .otherwise(F.lit("Low")),
             )
         )

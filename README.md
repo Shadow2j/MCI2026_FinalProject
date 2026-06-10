@@ -257,9 +257,9 @@ Silver = total_orders 3-4
 Bronze = total_orders < 3
 
 # Churn Risk
-High   = recency > 180 days
-Medium = recency 90-180 days
-Low    = recency < 90 days
+High   = recency > 60 days
+Medium = recency 30-60 days
+Low    = recency < 30 days
 ```
 
 ---
