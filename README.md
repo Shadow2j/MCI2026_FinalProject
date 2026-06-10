@@ -439,13 +439,15 @@ The stagnation is caused by a combination of compounding factors, specifically:
 
 Using a Random Forest Counterfactual Simulation (R²=0.147 on 20K orders), we projected the impact of various CX solutions:
 
-| Scenario | Baseline | Projected | Delta | Affected Orders |
-|----------|----------|-----------|-------|----------------|
-| **S1 — Eliminate Late Delivery** | 4.078 | **4.187** | **+0.110** | 7.5% |
-| S2 — Accelerate Approval | 4.078 | 4.078 | +0.001 | 1.6% |
-| S3 — Cap Freight ≤30 | 4.078 | 4.077 | -0.001 | 11.4% |
-| S4 — Remove Bad Sellers | 4.078 | 4.082 | +0.004 | 1.7% |
-| **S5 — Best Case Combined** | 4.078 | **4.186** | **+0.108** | 17.7% |
+| Scenario | Baseline | Projected | Delta (Review) | Affected Orders | Est. Revenue Growth |
+|----------|----------|-----------|----------------|-----------------|---------------------|
+| **S1 — Eliminate Late Delivery** | 4.078 | **4.187** | **+0.110** | 7.5% | **+0.55%** |
+| S2 — Accelerate Approval | 4.078 | 4.078 | +0.001 | 1.6% | +0.005% |
+| S3 — Cap Freight ≤30 | 4.078 | 4.077 | -0.001 | 11.4% | -0.005% |
+| S4 — Remove Bad Sellers | 4.078 | 4.082 | +0.004 | 1.7% | +0.02% |
+| **S5 — Best Case Combined** | 4.078 | **4.186** | **+0.108** | 17.7% | **+0.54%** |
+
+> **Financial Assumption:** A `+1.0 point` increase in the aggregate review score correlates to a `+5.0%` increase in organic order growth (driven by higher retention and reduced customer churn).
 
 ###  Operational Priority Recommendations (Actionable)
 
